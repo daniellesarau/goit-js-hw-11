@@ -1,14 +1,10 @@
 import { Notify } from 'notiflix';
 import ImagesApiService from './api';
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const imageApiService = new ImagesApiService();
 const form = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 const button = document.querySelector('.load-more');
-
-const lightbox = new SimpleLightbox('.gallery a');
 
 form.addEventListener('submit', submit);
 button.addEventListener('click', loadMore);
