@@ -1,11 +1,14 @@
 import { Notify } from 'notiflix';
 import ImagesApiService from './api';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const imageApiService = new ImagesApiService();
 const form = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 const button = document.querySelector('.load-more');
-console.log(button);
+
+const lightbox = new SimpleLightbox('.gallery a');
 
 form.addEventListener('submit', submit);
 button.addEventListener('click', loadMore);
@@ -61,7 +64,7 @@ function renderImages(queriesArray) {
   const markup = queriesArray
     .map(item => {
       return `<div class="photo-card">
-  <div class="thumb"><img src="${item.webformatURL}" alt="${item.tags}" loading="lazy" /></div>
+  <div class="card"><img src="${item.webformatURL}" alt="${item.tags}" loading="lazy" /></div>
   <div class="info">
     <p class="info-item">
       <b>Likes</b><span>${item.likes}</span>
