@@ -1,5 +1,6 @@
 import { Notify } from 'notiflix';
 import ImagesApiService from './api';
+import { Axios } from 'axios';
 
 const imageApiService = new ImagesApiService();
 const form = document.getElementById('search-form');
