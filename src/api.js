@@ -22,7 +22,7 @@ export default class ImagesApiService {
     );
     this.page += 1;
 
-    return response.data;
+    return response.json();
   }
 
   resetPage() {
