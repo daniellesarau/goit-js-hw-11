@@ -1,5 +1,4 @@
 import axios from 'axios';
-import VueAxios from 'vue-axios';
 
 const API_KEY = '38190446-4bb1c0206a67f58024ebd8e6f';
 const BASE_URL = 'https://pixabay.com/api/';
