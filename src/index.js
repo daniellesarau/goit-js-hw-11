@@ -1,10 +1,59 @@
 import { Notify } from 'notiflix';
-import ImagesApiService from './api';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const imageApiService = new ImagesApiService();
+//api.js
+class ImagesApiService {
+  constructor() {
+    this.searchQuery = '';
+    this.page = 1;
+    this.per_page = 40;
+  }
+
+  fetchPixabay() {
+    const API_KEY = '38190446-4bb1c0206a67f58024ebd8e6f';
+    const BASE_URL = 'https://pixabay.com/api/';
+    return fetch(
+      `${BASE_URL}?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation="horizontal"&safesearch=true&page=${this.page}&per_page=${this.per_page}`
+    )
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(
+            'Sorry, there are no images matching your search. Please try again.'
+          );
+        }
+        return res.json();
+      })
+      .then(data => {
+        this.nextPage();
+        return data;
+      });
+  }
+
+  nextPage() {
+    this.page += 1;
+  }
+
+  resetPage() {
+    this.page = 1;
+  }
+
+  get query() {
+    return this.searchQuery;
+  }
+
+  set query(newQuery) {
+    this.searchQuery = newQuery;
+  }
+}
+
+// index.js
+
 const form = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 const button = document.querySelector('.load-more');
+let lastSearchQuery = '';
+const imageApiService = new ImagesApiService();
 
 form.addEventListener('submit', submit);
 button.addEventListener('click', loadMore);
@@ -20,7 +69,7 @@ function submit(e) {
     return;
   } else {
     imageApiService
-      .getImage()
+      .fetchPixabay()
       .then(data => {
         let queriesArray = data.hits;
         if (queriesArray.length === 0) {
@@ -35,19 +84,21 @@ function submit(e) {
           renderImages(queriesArray);
           Notify.success(`Hooray! We found ${data.totalHits} images.`);
           button.classList.remove('is-hidden');
+          galleryLightbox.refresh();
         }
       })
       .catch(error => {
         Notify.info(
           "We're sorry, but you've reached the end of search results."
         );
+
         console.log(error);
       });
   }
 }
 
 function loadMore() {
-  imageApiService.getImage().then(data => {
+  imageApiService.fetchPixabay().then(data => {
     let queriesArray = data.hits;
     renderImages(queriesArray);
     if (queriesArray.length < 40) {
@@ -80,3 +131,9 @@ function renderImages(queriesArray) {
     .join('');
   gallery.insertAdjacentHTML('beforeend', markup);
 }
+
+const galleryLightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionPosition: 'bottom',
+  captionDelay: 250,
+});
