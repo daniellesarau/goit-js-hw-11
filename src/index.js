@@ -52,8 +52,12 @@ class ImagesApiService {
 const form = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 const button = document.querySelector('.load-more');
-let lastSearchQuery = '';
 const imageApiService = new ImagesApiService();
+const galleryLightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionPosition: 'bottom',
+  captionDelay: 250,
+});
 
 form.addEventListener('submit', submit);
 button.addEventListener('click', loadMore);
@@ -84,14 +88,12 @@ function submit(e) {
           renderImages(queriesArray);
           Notify.success(`Hooray! We found ${data.totalHits} images.`);
           button.classList.remove('is-hidden');
-          galleryLightbox.refresh();
         }
       })
       .catch(error => {
         Notify.info(
           "We're sorry, but you've reached the end of search results."
         );
-
         console.log(error);
       });
   }
@@ -107,6 +109,7 @@ function loadMore() {
     }
   });
 }
+
 function renderImages(queriesArray) {
   const markup = queriesArray
     .map(item => {
@@ -131,9 +134,3 @@ function renderImages(queriesArray) {
     .join('');
   gallery.insertAdjacentHTML('beforeend', markup);
 }
-
-const galleryLightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionPosition: 'bottom',
-  captionDelay: 250,
-});
